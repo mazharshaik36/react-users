@@ -12,6 +12,7 @@
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "typecheck": "tsc --noEmit",
+    "ci": "npm ci && npm run verify",
     "verify": "npm run typecheck && npm run lint && npm run build",
     "prepare": "husky"
   },
