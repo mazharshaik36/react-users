@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { USER_COLUMNS } from "../constants/tableColumns";
 import type { SortState } from "../types/table";
-import { type User } from "../types/user";
+import type { User } from "../types/user";
 
 type Props = {
   users: User[];
@@ -34,7 +34,8 @@ export default function UsersTable({ users, sort, onSort }: Props) {
                 <div className="flex items-center gap-2">
                   {column.label}
 
-                  {sort.field === column.key &&
+                  {column.sortable &&
+                    sort.field === column.key &&
                     (sort.direction === "asc" ? <ArrowUp size={16} /> : <ArrowDown size={16} />)}
                 </div>
               </th>
