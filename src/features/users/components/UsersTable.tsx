@@ -2,13 +2,13 @@ import { ArrowDown, ArrowUp, Eye, Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import { USER_COLUMNS } from "../constants/tableColumns";
-import { type SortState } from "../types/table";
+import type { SortState } from "../types/table";
 import { type User } from "../types/user";
 
 type Props = {
   users: User[];
   sort: SortState;
-  onSort: (field: string) => void;
+  onSort: (field: SortState["field"]) => void;
 };
 
 export default function UsersTable({ users, sort, onSort }: Props) {
