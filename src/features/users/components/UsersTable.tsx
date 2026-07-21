@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { ArrowDown, ArrowUp, Eye, Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -12,41 +11,8 @@ type Props = {
   onSort: (field: string) => void;
 };
 
-const getSortValue = (user: User, field: string): string | number => {
-  switch (field) {
-    case "name":
-      return `${user.firstName} ${user.lastName}`;
-
-    case "email":
-      return user.email;
-
-    case "age":
-      return user.age;
-
-    default:
-      return "";
-  }
-};
-
 export default function UsersTable({ users, sort, onSort }: Props) {
   const navigate = useNavigate();
-
-  const sortedUsers = useMemo(() => {
-    return [...users].sort((a, b) => {
-      const first = getSortValue(a, sort.field);
-      const second = getSortValue(b, sort.field);
-
-      if (typeof first === "string" && typeof second === "string") {
-        return sort.direction === "asc" ? first.localeCompare(second) : second.localeCompare(first);
-      }
-
-      if (typeof first === "number" && typeof second === "number") {
-        return sort.direction === "asc" ? first - second : second - first;
-      }
-
-      return 0;
-    });
-  }, [users, sort]);
 
   return (
     <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow">
@@ -77,8 +43,8 @@ export default function UsersTable({ users, sort, onSort }: Props) {
         </thead>
 
         <tbody>
-          {sortedUsers.length > 0 ? (
-            sortedUsers.map((user) => (
+          {users.length > 0 ? (
+            users.map((user) => (
               <tr key={user.id} className="border-b transition hover:bg-slate-50">
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
