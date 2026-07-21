@@ -1,5 +1,5 @@
 import { PageHeader, Pagination, UsersTable } from "@features/users/components";
-import useUserManagement from "@features/users/hooks/useUserManagement";
+import { useUserManagement } from "@/features/users/hooks";
 
 export default function UsersPage() {
   const {
@@ -16,7 +16,7 @@ export default function UsersPage() {
     isError,
   } = useUserManagement();
 
-  if (isLoading) {
+  if (isLoading && !data) {
     return <div>Loading...</div>;
   }
 

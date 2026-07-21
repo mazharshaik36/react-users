@@ -1,9 +1,9 @@
-import axios from "axios";
+import { apiClient } from "@/shared/api";
 
-import { type UserFormData } from "@/features/users/schemas/userSchema";
+import { type UserFormData } from "@/features/users/schemas";
 
 export async function createUser(user: UserFormData) {
-  const response = await axios.post("https://dummyjson.com/users/add", user);
+  const { data } = await apiClient.post("/users/add", user);
 
-  return response.data;
+  return data;
 }

@@ -1,13 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
-import { getUsers } from "../api/userApi";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
-export const useUsers = (
-  page: number,
-  search: string
-) => {
+import { getUsers } from "@/features/users/api";
+import { userKeys } from "@/features/users/constants";
+
+export function useUsers(page: number, search: string) {
   return useQuery({
-    queryKey: ["users", page, search],
+    queryKey: userKeys.list(page, search),
     queryFn: () => getUsers(page, search),
-    placeholderData: (previousData) => previousData,
+
+    placeholderData: keepPreviousData,
   });
-};
+}

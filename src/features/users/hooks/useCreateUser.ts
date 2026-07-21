@@ -1,10 +1,18 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { createUser } from "@/features/users/api";
-import { type UserFormData } from "@/features/users/schemas/userSchema";
+import { userKeys } from "@/features/users/constants";
 
-export default function useCreateUser() {
+export function useCreateUser() {
+  const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: (user: UserFormData) => createUser(user),
+    mutationFn: createUser,
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: userKeys.all,
+      });
+    },
   });
 }

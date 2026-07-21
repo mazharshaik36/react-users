@@ -1,5 +1,5 @@
-export { default as useUser } from "./useUser";
-export { useUsers } from "./useUsers";
-export { default as useDebounce } from "./useDebounce";
-export { default as useCreateUser } from "./useCreateUser";
-export { default as useUserManagement } from "./useUserManagement";
+export { useCreateUser } from "@/features/users/hooks/useCreateUser";
+export { useDebounce } from "@/features/users/hooks/useDebounce";
+export { useUser } from "@/features/users/hooks/useUser";
+export { useUserManagement } from "@/features/users/hooks/useUserManagement";
+export { useUsers } from "@/features/users/hooks/useUsers";
