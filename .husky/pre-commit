@@ -1,7 +1,5 @@
-npm run typecheck
+#!/usr/bin/env sh
 
-if [ $? -ne 0 ]; then
-  exit 1
-fi
+npm run typecheck || exit 1
 
-npx lint-staged
+npx lint-staged || exit 1
