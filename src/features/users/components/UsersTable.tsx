@@ -1,8 +1,10 @@
+import { useMemo } from "react";
 import { ArrowDown, ArrowUp, Eye, Pencil, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
 import { USER_COLUMNS } from "../constants/tableColumns";
 import { type SortState } from "../types/table";
 import { type User } from "../types/user";
-import { useNavigate } from "react-router-dom";
 
 type Props = {
   users: User[];
@@ -10,47 +12,41 @@ type Props = {
   onSort: (field: string) => void;
 };
 
-export default function UsersTable({
-  users,
-  sort,
-  onSort,
-}: Props) {
+const getSortValue = (user: User, field: string): string | number => {
+  switch (field) {
+    case "name":
+      return `${user.firstName} ${user.lastName}`;
+
+    case "email":
+      return user.email;
+
+    case "age":
+      return user.age;
+
+    default:
+      return "";
+  }
+};
+
+export default function UsersTable({ users, sort, onSort }: Props) {
   const navigate = useNavigate();
 
-  const sortedUsers = [...users].sort((a, b) => {
-    let first: string | number = "";
-    let second: string | number = "";
+  const sortedUsers = useMemo(() => {
+    return [...users].sort((a, b) => {
+      const first = getSortValue(a, sort.field);
+      const second = getSortValue(b, sort.field);
 
-    switch (sort.field) {
-      case "name":
-        first = `${a.firstName} ${a.lastName}`;
-        second = `${b.firstName} ${b.lastName}`;
-        break;
+      if (typeof first === "string" && typeof second === "string") {
+        return sort.direction === "asc" ? first.localeCompare(second) : second.localeCompare(first);
+      }
 
-      case "email":
-        first = a.email;
-        second = b.email;
-        break;
+      if (typeof first === "number" && typeof second === "number") {
+        return sort.direction === "asc" ? first - second : second - first;
+      }
 
-      case "age":
-        first = a.age;
-        second = b.age;
-        break;
-
-      default:
-        return 0;
-    }
-
-    if (typeof first === "string") {
-      return sort.direction === "asc"
-        ? first.localeCompare(second as string)
-        : (second as string).localeCompare(first);
-    }
-
-    return sort.direction === "asc"
-      ? (first as number) - (second as number)
-      : (second as number) - (first as number);
-  });
+      return 0;
+    });
+  }, [users, sort]);
 
   return (
     <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow">
@@ -61,25 +57,19 @@ export default function UsersTable({
               <th
                 key={column.key}
                 className={`px-6 py-4 text-left ${
-                  column.sortable
-                    ? "cursor-pointer select-none"
-                    : ""
+                  column.sortable ? "cursor-pointer select-none" : ""
                 }`}
                 onClick={() => {
-                  if (!column.sortable) return;
-
-                  onSort(column.key);
+                  if (column.sortable) {
+                    onSort(column.key);
+                  }
                 }}
               >
                 <div className="flex items-center gap-2">
                   {column.label}
 
                   {sort.field === column.key &&
-                    (sort.direction === "asc" ? (
-                      <ArrowUp size={16} />
-                    ) : (
-                      <ArrowDown size={16} />
-                    ))}
+                    (sort.direction === "asc" ? <ArrowUp size={16} /> : <ArrowDown size={16} />)}
                 </div>
               </th>
             ))}
@@ -87,69 +77,52 @@ export default function UsersTable({
         </thead>
 
         <tbody>
-          {sortedUsers.map((user) => (
-            <tr
-              key={user.id}
-              className="border-b transition hover:bg-slate-50"
-            >
-              <td className="px-6 py-4">
-                <div className="flex items-center gap-3">
-                  <img
-                    src={user.image}
-                    alt={user.firstName}
-                    className="h-10 w-10 rounded-full"
-                  />
+          {sortedUsers.length > 0 ? (
+            sortedUsers.map((user) => (
+              <tr key={user.id} className="border-b transition hover:bg-slate-50">
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-3">
+                    <img src={user.image} alt={user.firstName} className="h-10 w-10 rounded-full" />
 
-                  <div>
-                    <p className="font-semibold">
-                      {user.firstName} {user.lastName}
-                    </p>
+                    <div>
+                      <p className="font-semibold">
+                        {user.firstName} {user.lastName}
+                      </p>
 
-                    <p className="text-xs text-gray-500">
-                      ID #{user.id}
-                    </p>
+                      <p className="text-xs text-gray-500">ID #{user.id}</p>
+                    </div>
                   </div>
-                </div>
-              </td>
+                </td>
 
-              <td className="px-6 py-4">
-                {user.email}
-              </td>
+                <td className="px-6 py-4">{user.email}</td>
 
-              <td className="px-6 py-4">
-                {user.age}
-              </td>
+                <td className="px-6 py-4">{user.age}</td>
 
-              <td className="px-6 py-4">
-                {user.phone}
-              </td>
+                <td className="px-6 py-4">{user.phone}</td>
 
-              <td className="px-6 py-4">
-                <div className="flex justify-center gap-3">
+                <td className="px-6 py-4">
+                  <div className="flex justify-center gap-3">
                     <button
-                    onClick={() => navigate(`/users/${user.id}`)}
-                    className="rounded p-2 text-blue-600 hover:bg-blue-100"
-                  >
-                    <Eye size={18} />
-                  </button>
-                  <button className="rounded p-2 text-amber-600 hover:bg-amber-100">
-                    <Pencil size={18} />
-                  </button>
+                      onClick={() => navigate(`/users/${user.id}`)}
+                      className="rounded p-2 text-blue-600 transition hover:bg-blue-100"
+                    >
+                      <Eye size={18} />
+                    </button>
 
-                  <button className="rounded p-2 text-red-600 hover:bg-red-100">
-                    <Trash2 size={18} />
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
+                    <button className="rounded p-2 text-amber-600 transition hover:bg-amber-100">
+                      <Pencil size={18} />
+                    </button>
 
-          {sortedUsers.length === 0 && (
+                    <button className="rounded p-2 text-red-600 transition hover:bg-red-100">
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))
+          ) : (
             <tr>
-              <td
-                colSpan={5}
-                className="py-8 text-center text-gray-500"
-              >
+              <td colSpan={5} className="py-8 text-center text-gray-500">
                 No users found.
               </td>
             </tr>
