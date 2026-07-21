@@ -31,13 +31,12 @@ export default function useUserManagement() {
     setPage(1);
   };
 
-  const handleSort = (field: string) => {
+  const handleSort = (field: SortState["field"]) => {
     setSort((previous) => ({
       field,
       direction: previous.field === field && previous.direction === "asc" ? "desc" : "asc",
     }));
   };
-
   const totalPages = Math.ceil((data?.total ?? 0) / PAGE_SIZE);
 
   return {
