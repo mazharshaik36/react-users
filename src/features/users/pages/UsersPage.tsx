@@ -5,18 +5,13 @@ export default function UsersPage() {
   const {
     page,
     setPage,
-
     search,
     handleSearch,
-
     sort,
     handleSort,
-
-    data,
     sortedUsers,
-
+    data,
     totalPages,
-
     isLoading,
     isError,
   } = useUserManagement();

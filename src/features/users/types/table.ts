@@ -1,6 +1,8 @@
+export type SortField = "name" | "email" | "age";
+
 export type SortDirection = "asc" | "desc";
 
-export interface SortState {
-  field: string;
+export type SortState = {
+  field: SortField;
   direction: SortDirection;
-}
+};

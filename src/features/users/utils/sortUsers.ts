@@ -1,26 +1,16 @@
+import { SORT_ACCESSORS } from "@/features/users/constants/sortAccessors";
 import { type SortState } from "@/features/users/types/table";
 import { type User } from "@/features/users/types/user";
 
-const getSortValue = (user: User, field: string): string | number => {
-  switch (field) {
-    case "name":
-      return `${user.firstName} ${user.lastName}`;
-
-    case "email":
-      return user.email;
-
-    case "age":
-      return user.age;
-
-    default:
-      return "";
-  }
-};
-
 export function sortUsers(users: User[], sort: SortState): User[] {
+  const accessor = SORT_ACCESSORS[sort.field];
+  if (!accessor) {
+    return users;
+  }
+
   return [...users].sort((a, b) => {
-    const first = getSortValue(a, sort.field);
-    const second = getSortValue(b, sort.field);
+    const first = accessor(a);
+    const second = accessor(b);
 
     if (typeof first === "string" && typeof second === "string") {
       return sort.direction === "asc" ? first.localeCompare(second) : second.localeCompare(first);
