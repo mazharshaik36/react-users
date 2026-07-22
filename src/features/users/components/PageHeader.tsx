@@ -1,5 +1,8 @@
+import { Link } from "react-router-dom";
+
 import SearchInput from "./SearchInput";
-import PrimaryButton from "../../../shared/components/PrimaryButton";
+
+import { PrimaryButton } from "@/shared/components";
 
 type Props = {
   totalUsers: number;
@@ -19,7 +22,9 @@ export default function PageHeader({ totalUsers, search, onSearch }: Props) {
       <div className="flex items-center gap-4">
         <SearchInput value={search} onChange={onSearch} />
 
-        <PrimaryButton>+ Add User</PrimaryButton>
+        <Link to="/users/new">
+          <PrimaryButton>+ Add User</PrimaryButton>
+        </Link>
       </div>
     </div>
   );

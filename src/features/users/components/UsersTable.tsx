@@ -1,9 +1,9 @@
 import { ArrowDown, ArrowUp, Eye, Pencil, Trash2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-import { USER_COLUMNS } from "../constants/tableColumns";
-import type { SortState } from "../types/table";
-import type { User } from "../types/user";
+import { USER_COLUMNS } from "@/features/users/constants/tableColumns";
+import type { SortState } from "@/features/users/types/table";
+import type { User } from "@/features/users/types/user";
 
 type Props = {
   users: User[];
@@ -12,8 +12,6 @@ type Props = {
 };
 
 export default function UsersTable({ users, sort, onSort }: Props) {
-  const navigate = useNavigate();
-
   return (
     <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow">
       <table className="w-full">
@@ -69,18 +67,27 @@ export default function UsersTable({ users, sort, onSort }: Props) {
 
                 <td className="px-6 py-4">
                   <div className="flex justify-center gap-3">
-                    <button
-                      onClick={() => navigate(`/users/${user.id}`)}
+                    <Link
+                      to={`/users/${user.id}`}
                       className="rounded p-2 text-blue-600 transition hover:bg-blue-100"
+                      aria-label={`View ${user.firstName} ${user.lastName}`}
                     >
                       <Eye size={18} />
-                    </button>
+                    </Link>
 
-                    <button className="rounded p-2 text-amber-600 transition hover:bg-amber-100">
+                    <Link
+                      to={`/users/${user.id}/edit`}
+                      className="rounded p-2 text-amber-600 transition hover:bg-amber-100"
+                      aria-label={`Edit ${user.firstName} ${user.lastName}`}
+                    >
                       <Pencil size={18} />
-                    </button>
+                    </Link>
 
-                    <button className="rounded p-2 text-red-600 transition hover:bg-red-100">
+                    <button
+                      type="button"
+                      className="rounded p-2 text-red-600 transition hover:bg-red-100"
+                      aria-label={`Delete ${user.firstName} ${user.lastName}`}
+                    >
                       <Trash2 size={18} />
                     </button>
                   </div>
