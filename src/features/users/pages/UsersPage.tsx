@@ -1,5 +1,6 @@
-import { PageHeader, Pagination, UsersTable } from "@features/users/components";
+import { PageHeader, Pagination, UsersPageSkeleton, UsersTable } from "@features/users/components";
 import { useUserManagement } from "@/features/users/hooks";
+import { ErrorState } from "@/shared/components";
 
 export default function UsersPage() {
   const {
@@ -14,16 +15,23 @@ export default function UsersPage() {
     totalPages,
     isLoading,
     isError,
+    refetch,
   } = useUserManagement();
-
   if (isLoading && !data) {
-    return <div>Loading...</div>;
+    return <UsersPageSkeleton />;
   }
 
   if (isError) {
-    return <div>Error loading users.</div>;
+    return (
+      <ErrorState
+        title="Unable to load users"
+        description="Please check your internet connection and try again."
+        onRetry={() => {
+          void refetch();
+        }}
+      />
+    );
   }
-
   return (
     <div className="min-h-screen bg-slate-100 p-10">
       <div className="mx-auto max-w-7xl rounded-xl bg-white p-8 shadow-lg">

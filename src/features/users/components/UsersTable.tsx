@@ -1,7 +1,7 @@
 import { ArrowDown, ArrowUp, Eye, Pencil, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-import { USER_COLUMNS } from "@/features/users/constants/tableColumns";
+import { USER_COLUMNS } from "@/features/users/constants";
 import type { SortState } from "@/features/users/types/table";
 import type { User } from "@/features/users/types/user";
 

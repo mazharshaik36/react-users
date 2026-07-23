@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 
 import { useDebounce, useUsers } from "@/features/users/hooks";
-
 import { sortUsers } from "@/features/users/utils";
 import { PAGE_SIZE } from "@/features/users/constants";
 import { type SortState } from "@/features/users/types";
@@ -18,9 +17,11 @@ export function useUserManagement() {
 
   const debouncedSearch = useDebounce(search, 500);
 
-  const { data, isLoading, isFetching, isError } = useUsers(page, debouncedSearch);
+  const { data, isLoading, isError, refetch } = useUsers(page, debouncedSearch);
 
-  const sortedUsers = useMemo(() => sortUsers(data?.users ?? [], sort), [data?.users, sort]);
+  const sortedUsers = useMemo(() => {
+    return sortUsers(data?.users ?? [], sort);
+  }, [data?.users, sort]);
 
   const handleSearch = (value: string) => {
     setSearch(value);
@@ -33,6 +34,8 @@ export function useUserManagement() {
       direction: previous.field === field && previous.direction === "asc" ? "desc" : "asc",
     }));
   };
+
+  const totalPages = Math.ceil((data?.total ?? 0) / PAGE_SIZE);
 
   return {
     page,
@@ -49,9 +52,9 @@ export function useUserManagement() {
     data,
 
     isLoading,
-    isFetching,
     isError,
+    refetch,
 
-    totalPages: Math.ceil((data?.total ?? 0) / PAGE_SIZE),
+    totalPages,
   };
 }
