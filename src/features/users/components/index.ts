@@ -11,3 +11,4 @@ export { default as PageHeaderSkeleton } from "@/features/users/components/PageH
 export { default as PaginationSkeleton } from "@/features/users/components/PaginationSkeleton";
 export { default as UsersPageSkeleton } from "@/features/users/components/UsersPageSkeleton";
 export { default as DeleteUserButton } from "@/features/users/components/DeleteUserButton";
+export { default as UserActions } from "@/features/users/components/UserActions";

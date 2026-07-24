@@ -1,38 +1,69 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { useDebounce, useUsers } from "@/features/users/hooks";
 import { sortUsers } from "@/features/users/utils";
-import { PAGE_SIZE } from "@/features/users/constants";
-import { type SortState } from "@/features/users/types";
+import type { SortState } from "@/features/users/types";
+
+const PAGE_SIZE = 10;
 
 export function useUserManagement() {
-  const [page, setPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [search, setSearch] = useState("");
+  const page = Number(searchParams.get("page") ?? "1");
 
-  const [sort, setSort] = useState<SortState>({
-    field: "name",
-    direction: "asc",
-  });
+  const search = searchParams.get("search") ?? "";
 
+  const [sortField, sortDirection] = [
+    searchParams.get("sort") ?? "name",
+    searchParams.get("direction") ?? "asc",
+  ];
+
+  const sort = useMemo<SortState>(
+    () => ({
+      field: sortField as SortState["field"],
+      direction: sortDirection as SortState["direction"],
+    }),
+    [sortField, sortDirection],
+  );
   const debouncedSearch = useDebounce(search, 500);
 
   const { data, isLoading, isError, refetch } = useUsers(page, debouncedSearch);
-
   const sortedUsers = useMemo(() => {
     return sortUsers(data?.users ?? [], sort);
   }, [data?.users, sort]);
 
+  const setPage = (page: number) => {
+    const params = new URLSearchParams(searchParams);
+
+    params.set("page", page.toString());
+
+    setSearchParams(params);
+  };
+
   const handleSearch = (value: string) => {
-    setSearch(value);
-    setPage(1);
+    const params = new URLSearchParams(searchParams);
+
+    if (value) {
+      params.set("search", value);
+    } else {
+      params.delete("search");
+    }
+
+    params.set("page", "1");
+
+    setSearchParams(params);
   };
 
   const handleSort = (field: SortState["field"]) => {
-    setSort((previous) => ({
-      field,
-      direction: previous.field === field && previous.direction === "asc" ? "desc" : "asc",
-    }));
+    const params = new URLSearchParams(searchParams);
+
+    const nextDirection = sort.field === field && sort.direction === "asc" ? "desc" : "asc";
+
+    params.set("sort", field);
+    params.set("direction", nextDirection);
+
+    setSearchParams(params);
   };
 
   const totalPages = Math.ceil((data?.total ?? 0) / PAGE_SIZE);
@@ -50,7 +81,6 @@ export function useUserManagement() {
     sortedUsers,
 
     data,
-
     isLoading,
     isError,
     refetch,
