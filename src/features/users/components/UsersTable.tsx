@@ -1,10 +1,10 @@
-import { ArrowDown, ArrowUp, Eye, Pencil } from "lucide-react";
-import { DeleteUserButton } from "@/features/users/components";
-import { Link } from "react-router-dom";
-
+import { ArrowDown, ArrowUp, Users } from "lucide-react";
+import { EmptyState } from "@/shared/components";
 import { USER_COLUMNS } from "@/features/users/constants";
-import type { SortState } from "@/features/users/types/table";
-import type { User } from "@/features/users/types/user";
+import { UserRow } from "@/features/users/components";
+
+import type { SortState } from "@/features/users/types";
+import type { User } from "@/features/users/types";
 
 type Props = {
   users: User[];
@@ -44,55 +44,16 @@ export default function UsersTable({ users, sort, onSort }: Props) {
 
         <tbody>
           {users.length > 0 ? (
-            users.map((user) => (
-              <tr key={user.id} className="border-b transition hover:bg-slate-50">
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <img src={user.image} alt={user.firstName} className="h-10 w-10 rounded-full" />
-
-                    <div>
-                      <p className="font-semibold">
-                        {user.firstName} {user.lastName}
-                      </p>
-
-                      <p className="text-xs text-gray-500">ID #{user.id}</p>
-                    </div>
-                  </div>
-                </td>
-
-                <td className="px-6 py-4">{user.email}</td>
-
-                <td className="px-6 py-4">{user.age}</td>
-
-                <td className="px-6 py-4">{user.phone}</td>
-
-                <td className="px-6 py-4">
-                  <div className="flex justify-center gap-3">
-                    <Link
-                      to={`/users/${user.id}`}
-                      className="rounded p-2 text-blue-600 transition hover:bg-blue-100"
-                      aria-label={`View ${user.firstName} ${user.lastName}`}
-                    >
-                      <Eye size={18} />
-                    </Link>
-
-                    <Link
-                      to={`/users/${user.id}/edit`}
-                      className="rounded p-2 text-amber-600 transition hover:bg-amber-100"
-                      aria-label={`Edit ${user.firstName} ${user.lastName}`}
-                    >
-                      <Pencil size={18} />
-                    </Link>
-
-                    <DeleteUserButton userId={user.id} />
-                  </div>
-                </td>
-              </tr>
-            ))
+            users.map((user) => <UserRow key={user.id} user={user} />)
           ) : (
             <tr>
-              <td colSpan={5} className="py-8 text-center text-gray-500">
-                No users found.
+              <td colSpan={5}>
+                <EmptyState
+                  icon={<Users size={36} />}
+
+                  title="No users found"
+                  description="Try adjusting your search to find what you're looking for."
+                />
               </td>
             </tr>
           )}

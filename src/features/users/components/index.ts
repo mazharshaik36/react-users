@@ -12,3 +12,4 @@ export { default as PaginationSkeleton } from "@/features/users/components/Pagin
 export { default as UsersPageSkeleton } from "@/features/users/components/UsersPageSkeleton";
 export { default as DeleteUserButton } from "@/features/users/components/DeleteUserButton";
 export { default as UserActions } from "@/features/users/components/UserActions";
+export { default as UserRow } from "@/features/users/components/UserRow";
