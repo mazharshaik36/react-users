@@ -1,4 +1,5 @@
-import { ArrowDown, ArrowUp, Eye, Pencil, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, Eye, Pencil } from "lucide-react";
+import { DeleteUserButton } from "@/features/users/components";
 import { Link } from "react-router-dom";
 
 import { USER_COLUMNS } from "@/features/users/constants";
@@ -83,13 +84,7 @@ export default function UsersTable({ users, sort, onSort }: Props) {
                       <Pencil size={18} />
                     </Link>
 
-                    <button
-                      type="button"
-                      className="rounded p-2 text-red-600 transition hover:bg-red-100"
-                      aria-label={`Delete ${user.firstName} ${user.lastName}`}
-                    >
-                      <Trash2 size={18} />
-                    </button>
+                    <DeleteUserButton userId={user.id} />
                   </div>
                 </td>
               </tr>

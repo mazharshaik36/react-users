@@ -37,3 +37,7 @@ export async function updateUser(id: string, user: UserFormData): Promise<User> 
 
   return data;
 }
+
+export async function deleteUser(id: string): Promise<void> {
+  await apiClient.delete(`/users/${id}`);
+}

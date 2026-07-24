@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 
-import { Loader } from "@/shared/components";
+import { ErrorState, Loader } from "@/shared/components";
+import { FormLayout } from "@/shared/layouts";
 
 import { UserForm } from "@/features/users/components/UserForm";
 import { useUser, useUpdateUser } from "@/features/users/hooks";
@@ -11,7 +12,7 @@ export default function EditUserPage() {
 
   const navigate = useNavigate();
 
-  const { data: user, isLoading, isError } = useUser(id!);
+  const { data: user, isLoading, isError, refetch } = useUser(id!);
 
   const mutation = useUpdateUser();
 
@@ -20,7 +21,15 @@ export default function EditUserPage() {
   }
 
   if (isError || !user) {
-    return <div className="p-10 text-center">User not found.</div>;
+    return (
+      <ErrorState
+        title="Unable to load user"
+        description="We couldn't load this user's information."
+        onRetry={() => {
+          void refetch();
+        }}
+      />
+    );
   }
 
   const handleSubmit = async (data: UserFormData) => {
@@ -33,23 +42,23 @@ export default function EditUserPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 p-10">
-      <div className="mx-auto max-w-3xl">
-        <h1 className="mb-8 text-3xl font-bold">Edit User</h1>
-
-        <UserForm
-          defaultValues={{
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-            age: user.age,
-            phone: user.phone,
-          }}
-          submitLabel="Update User"
-          isSubmitting={mutation.isPending}
-          onSubmit={handleSubmit}
-        />
-      </div>
-    </div>
+    <FormLayout
+      title="Edit User"
+      subtitle="Update the user's information"
+      onBack={() => navigate(-1)}
+    >
+      <UserForm
+        defaultValues={{
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          age: user.age,
+          phone: user.phone,
+        }}
+        submitLabel="Update User"
+        isSubmitting={mutation.isPending}
+        onSubmit={handleSubmit}
+      />
+    </FormLayout>
   );
 }

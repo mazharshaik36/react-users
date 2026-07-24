@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 import { updateUser } from "@/features/users/api";
 import { userKeys } from "@/features/users/constants";
@@ -23,6 +24,12 @@ export function useUpdateUser() {
       queryClient.invalidateQueries({
         queryKey: userKeys.detail(variables.id),
       });
+
+      toast.success("User updated successfully.");
+    },
+
+    onError: () => {
+      toast.error("Failed to update user.");
     },
   });
 }
